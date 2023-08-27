@@ -1,9 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:schoolapp/components/scrollablecolumn.dart';
-import 'package:schoolapp/main.dart';
+import 'package:schoolapp/services/auth/auth_service.dart';
 import 'package:schoolapp/utility/utils.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 
 class SchoolSelection extends StatefulWidget {
   const SchoolSelection({super.key});
@@ -16,7 +16,8 @@ class _SchoolSelectionState extends State<SchoolSelection> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? selectedRegion;
   List<String> allSchoolValue = [];
-  String? searchText;
+  TextEditingController schoolcontroller = TextEditingController();
+
 
   Future<void> fetchAllSchoolValue() async {
     if (selectedRegion != null) {
@@ -172,14 +173,20 @@ class _SchoolSelectionState extends State<SchoolSelection> {
               },
               onSelected: (String selectedValue) {
                 setState(() {
-                  searchText = selectedValue;
+                  schoolcontroller.text = selectedValue;
                 });
               },
             ),
           ),
           Spacer(),
           InkWell(
-            onTap: () {},
+            onTap: () async{
+              if (selectedRegion != null && schoolcontroller.text.isNotEmpty) {
+                String userId = FirebaseAuth.instance.currentUser!.uid;
+
+                await SchoolService().addSchool(selectedRegion!, schoolcontroller.text);
+              }
+            },
             child: Container(
               width: mWidth,
               height: 64*fem,
