@@ -12,37 +12,8 @@ class OnBoardingPage extends StatefulWidget {
 }
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
-  final _prefsKey = 'showOnBoarding'; // SharedPreferences 키 값
-  bool _showOnBoarding = true; // 온보딩 페이지를 보여줄지 여부
-
-  @override
-  void initState() {
-    super.initState();
-    _checkShowOnBoarding();
-  }
-
-  void _checkShowOnBoarding() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _showOnBoarding = prefs.getBool(_prefsKey) ?? true;
-    });
-  }
-
-  void _markOnBoardingComplete() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(_prefsKey, false);
-    setState(() {
-      _showOnBoarding = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-
-    if (!_showOnBoarding) {
-      return const Register(); // 이미 온보딩을 완료한 경우 다른 페이지로 이동
-    }
-
     return SafeArea(
       child: IntroductionScreen(
         pages: [
@@ -85,12 +56,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               Icons.start,
               color: Colors.black,
             ),
-        onDone: () {
-          _markOnBoardingComplete(); // 온보딩 완료 처리
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const Register()),
-          );
-        },
+        onDone: () {},
         next: const Icon(
             Icons.arrow_forward,
             color: Colors.black,

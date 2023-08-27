@@ -42,6 +42,8 @@ dependencies:
   shared_preferences: ^2.2.0
   web_socket_channel: ^2.4.0
   dropdown_button2: ^2.3.8
+  firebase_auth: ^4.8.0
+  provider:
 
 dev_dependencies:
   flutter_test:

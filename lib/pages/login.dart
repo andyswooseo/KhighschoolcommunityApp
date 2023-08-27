@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:schoolapp/components/my_button.dart';
 import 'package:schoolapp/components/scrollablecolumn.dart';
+import 'package:schoolapp/services/auth/auth_service.dart';
 import 'package:schoolapp/utility/utils.dart';
 import 'package:schoolapp/components/text_field.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class Login extends StatefulWidget {
+  final void Function()? onTap;
+
+  const Login({super.key, required this.onTap});
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  //text controllers
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final nicknameController = TextEditingController();
+
+  //sign in user
+  void signIn() async {
+    //get the auth service
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    try {
+      await authService.signinWithEmailandPassword(
+          emailController.text, passwordController.text);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
-    final nicknameController = TextEditingController();
-
     double mHeight = MediaQuery.sizeOf(context).height;
 
     double baseWidth = 441;
@@ -101,12 +130,11 @@ class Login extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '혹시 이미 계정이 이미 있으신가요 ?',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '계정이 아직 없으신가요 ?',
                         style: SafeGoogleFont(
                           'Noto Sans KR',
                           fontSize: 13 * ffem,
@@ -115,37 +143,32 @@ class Login extends StatelessWidget {
                           color: const Color(0xff000000),
                         ),
                       ),
-                    ),
-                  ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      GestureDetector(
+                        onTap: widget.onTap,
+                        child: Text(
+                          '회원가입하기',
+                          style: SafeGoogleFont(
+                            'Noto Sans KR',
+                            fontSize: 13 * ffem,
+                            fontWeight: FontWeight.w700,
+                            height: 1.3 * ffem / fem,
+                            color: const Color(0xff000000),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
             Spacer(),
-            InkWell(
-              onTap: () {},
-              child: Container(
-                width: MediaQuery.sizeOf(context).width,
-                height: 64*fem,
-                decoration: const BoxDecoration (
-                  color: Color(0xff000000),
-                ),
-                child: Center(
-                  child: Center(
-                    child: Text(
-                      '다음',
-                      textAlign: TextAlign.center,
-                      style: SafeGoogleFont (
-                        'Noto Sans KR',
-                        fontSize: 20*ffem,
-                        fontWeight: FontWeight.w700,
-                        height: 1.3*ffem/fem,
-                        color: const Color(0xffffffff),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            MyButton(
+              onTap: signIn,
+              text: "로그인하기",
+            )
           ],
         ),
       ),
