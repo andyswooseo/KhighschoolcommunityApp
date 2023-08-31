@@ -14,7 +14,7 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.sizeOf(context).width - 50,
         height: 55,
         child: TextField(

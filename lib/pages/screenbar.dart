@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:schoolapp/components/scrollablecolumn.dart';
-import 'package:schoolapp/services/auth/auth_service.dart';
+import 'package:schoolapp/providerclass/allprovider.dart';
 import 'package:schoolapp/utility/utils.dart';
 
 class SchoolSelection extends StatefulWidget {
+
   const SchoolSelection({super.key});
 
   @override
@@ -17,7 +19,6 @@ class _SchoolSelectionState extends State<SchoolSelection> {
   String? selectedRegion;
   List<String> allSchoolValue = [];
   TextEditingController schoolcontroller = TextEditingController();
-
 
   Future<void> fetchAllSchoolValue() async {
     if (selectedRegion != null) {
@@ -47,9 +48,7 @@ class _SchoolSelectionState extends State<SchoolSelection> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-              height: mHeight * 0.1
-          ),
+          SizedBox(height: mHeight * 0.1),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Padding(
@@ -66,11 +65,9 @@ class _SchoolSelectionState extends State<SchoolSelection> {
               ),
             ),
           ),
-          SizedBox(
-              height: mHeight * 0.1
-          ),
+          SizedBox(height: mHeight * 0.1),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
+            margin: const EdgeInsets.symmetric(horizontal: 30),
             child: Text(
               '1. 학교 시도교육청 선택하기',
               style: SafeGoogleFont(
@@ -87,7 +84,7 @@ class _SchoolSelectionState extends State<SchoolSelection> {
           ),
           Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.symmetric(horizontal: 30),
+            margin: const EdgeInsets.symmetric(horizontal: 30),
             width: double.infinity,
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -96,14 +93,14 @@ class _SchoolSelectionState extends State<SchoolSelection> {
                   BoxShadow(
                       color: Colors.grey.withOpacity(0.2),
                       blurRadius: 15,
-                      offset: Offset(0, 10))
+                      offset: const Offset(0, 10))
                 ]),
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestore.collection('schoolname').snapshots(),
               builder: (context, snapshot) {
                 List<DropdownMenuItem> regionItems = [];
                 if (!snapshot.hasData) {
-                  CircularProgressIndicator();
+                  const CircularProgressIndicator();
                 } else {
                   final regions = snapshot.data?.docs.reversed.toList();
                   for (var region in regions!) {
@@ -116,7 +113,7 @@ class _SchoolSelectionState extends State<SchoolSelection> {
                   }
                 }
                 return DropdownButton(
-                  hint: Text('  학교 시도교육청을 선택해주세요.'),
+                  hint: const Text('  학교 시도교육청을 선택해주세요.'),
                   dropdownColor: Colors.white,
                   icon: const Icon(Icons.arrow_drop_down),
                   items: regionItems,
@@ -132,11 +129,11 @@ class _SchoolSelectionState extends State<SchoolSelection> {
               },
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 80,
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
+            margin: const EdgeInsets.symmetric(horizontal: 30),
             child: Text(
               '2. 재학 중인 고등학교 검색',
               style: SafeGoogleFont(
@@ -152,7 +149,7 @@ class _SchoolSelectionState extends State<SchoolSelection> {
             height: 8.5 * fem,
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
+            margin: const EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -174,34 +171,39 @@ class _SchoolSelectionState extends State<SchoolSelection> {
               onSelected: (String selectedValue) {
                 setState(() {
                   schoolcontroller.text = selectedValue;
+                  Provider.of<SchoolControllerProvider>(context, listen: false).schoolValue = selectedValue;
                 });
               },
             ),
           ),
-          Spacer(),
+          const Spacer(),
           InkWell(
-            onTap: () async{
-              if (selectedRegion != null && schoolcontroller.text.isNotEmpty) {
-                String userId = FirebaseAuth.instance.currentUser!.uid;
-
-                await SchoolService().addSchool(selectedRegion!, schoolcontroller.text);
+            onTap: () async {
+              if (schoolcontroller.text.isNotEmpty) {
+                Provider.of<NextButtonProvider>(context, listen: false).setClicked(true);
+              } else {
+                Provider.of<NextButtonProvider>(context, listen: false).setClicked(false);
               }
+              FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.email.toString()).update({
+                'schoolvalue' : schoolcontroller.text
+              });
             },
             child: Container(
               width: mWidth,
-              height: 64*fem,
-              decoration: BoxDecoration (
+              height: 64 * fem,
+              decoration: const BoxDecoration(
                 color: Color(0xff000000),
               ),
               child: Center(
-                child: Text('다음',
-                textAlign: TextAlign.center,
+                child: Text(
+                  '다음',
+                  textAlign: TextAlign.center,
                   style: SafeGoogleFont(
                     'Noto Sans KR',
-                    fontSize: 20*ffem,
+                    fontSize: 20 * ffem,
                     fontWeight: FontWeight.w700,
-                    height: 1.3*ffem/fem,
-                    color: Color(0xffffffff),
+                    height: 1.3 * ffem / fem,
+                    color: const Color(0xffffffff),
                   ),
                 ),
               ),

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:schoolapp/components/scrollablecolumn.dart';
 import 'package:schoolapp/components/text_field.dart';
-import 'package:schoolapp/pages/screenbar.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
 
+import '../providerclass/allprovider.dart';
 import '../utility/utils.dart';
 
 class Register extends StatefulWidget {
@@ -24,7 +24,7 @@ class _RegisterState extends State<Register> {
   final nicknameController = TextEditingController();
 
   //sign up user
-  void signUp() async {
+  void signUp(BuildContext context) async {
     if (passwordController.text != confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -38,10 +38,11 @@ class _RegisterState extends State<Register> {
     final authService = Provider.of<AuthService>(context, listen: false);
 
     try {
-      await authService.signUpWithEmailandPasswordandNickname(
+      await authService.signUpWithEmailPassword(
           emailController.text,
           passwordController.text,
-          nicknameController.text);
+          nicknameController.text
+          );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -226,8 +227,8 @@ class _RegisterState extends State<Register> {
             ),
             Spacer(),
             InkWell(
-              onTap: () {
-                signUp();
+              onTap: () async{
+                signUp(context);
               },
               child: Container(
                 width: MediaQuery.sizeOf(context).width,

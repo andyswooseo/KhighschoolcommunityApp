@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
     final authService = Provider.of<AuthService>(context, listen: false);
 
     try {
-      await authService.signinWithEmailandPassword(
+      await authService.signInWithEmailandPassword(
           emailController.text, passwordController.text);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

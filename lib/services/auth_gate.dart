@@ -1,21 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:schoolapp/pages/main_page.dart';
+import 'package:provider/provider.dart';
+import 'package:schoolapp/pages/screenbar.dart';
 
+import '../pages/main_page.dart';
+import '../providerclass/allprovider.dart';
+import 'auth/auth_service.dart';
 import 'auth/login_or_register.dart';
 
-class AuthGate extends StatelessWidget {
+class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
   @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+
+  @override
   Widget build(BuildContext context) {
+
+    final schoolControllerProvider = Provider.of<SchoolControllerProvider>(context);
+    final nextButtonProvider = Provider.of<NextButtonProvider>(context);
+    bool isButtonClicked = nextButtonProvider.isClicked;
+
     return Scaffold(
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          //user is logged in
-          if(snapshot.hasData) {
-            return const MainPage();
+          if (snapshot.hasData) {
+            if (schoolControllerProvider.schoolValue != null && isButtonClicked) {
+              return MainPage();
+            } else {
+              return SchoolSelection();
+            }
           }
           else {
             return const LoginOrRegister();
