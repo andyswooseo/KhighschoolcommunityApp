@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:schoolapp/pages/create_post/create_post.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
 import 'package:schoolapp/utility/utils.dart';
 
@@ -23,6 +24,17 @@ class _MainPageState extends State<MainPage> {
 
   final TextEditingController _searchController = TextEditingController();
   bool leftclick = true;
+  int _page = 0;
+
+  void onPageChange(int index) {
+    setState(() {
+      _page = index;
+    });
+  }
+
+  onCraetePost() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePost()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,16 +141,39 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        body: Center(
-          child: Column(
-            children: [],
+        body: IndexedStack(
+          index: _page,
+          children: [],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: onCraetePost,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 28,
           ),
         ),
-        bottomNavigationBar: CurvedNavigationBar(
+        bottomNavigationBar: CupertinoTabBar(
+          currentIndex: _page,
           items: [
-            Icon(Icons.home),
-            Icon(Icons.school),
-            Icon(Icons.supervised_user_circle)
+            BottomNavigationBarItem(
+              icon: Icon(
+                _page == 0 ? Icons.home_filled : Icons.home_outlined,
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.school),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                _page == 2
+                    ? Icons.notification_add_outlined
+                    : Icons.notification_important_outlined,
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+            ),
           ],
         ),
       ),

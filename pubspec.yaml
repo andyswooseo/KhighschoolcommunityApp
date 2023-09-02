@@ -46,6 +46,7 @@ dependencies:
   provider:
   google_nav_bar: ^5.0.6
   curved_navigation_bar: ^1.0.3
+  riverpod: ^2.3.10
 
 dev_dependencies:
   flutter_test:
