@@ -1,7 +1,4 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:schoolapp/pages/create_post/create_post.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
@@ -24,22 +21,15 @@ class _MainPageState extends State<MainPage> {
 
   final TextEditingController _searchController = TextEditingController();
   bool leftclick = true;
-  int _page = 0;
-
-  void onPageChange(int index) {
-    setState(() {
-      _page = index;
-    });
-  }
 
   onCraetePost() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePost()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CreatePost()));
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           elevation: 0,
@@ -142,7 +132,6 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         body: IndexedStack(
-          index: _page,
           children: [],
         ),
         floatingActionButton: FloatingActionButton(
@@ -153,30 +142,6 @@ class _MainPageState extends State<MainPage> {
             size: 28,
           ),
         ),
-        bottomNavigationBar: CupertinoTabBar(
-          currentIndex: _page,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                _page == 0 ? Icons.home_filled : Icons.home_outlined,
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                _page == 2
-                    ? Icons.notification_add_outlined
-                    : Icons.notification_important_outlined,
-              ),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-            ),
-          ],
-        ),
-      ),
-    );
+        );
   }
 }

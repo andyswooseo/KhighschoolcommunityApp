@@ -13,16 +13,32 @@ class _CreatePostState extends State<CreatePost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {},
-          icon: Icon(
-            Icons.close,
-            size: 30,
+          icon: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.close,
+              size: 30,
+              color: Colors.black,
+            ),
           ),
         ),
-        actions: [
-          MyButton(onTap: () {}, text: 'hi')
-        ],
+        actions: [MyButton(onTap: () {}, text: 'POST')],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CircleAvatar(
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

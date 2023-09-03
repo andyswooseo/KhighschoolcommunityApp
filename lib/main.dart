@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:schoolapp/pages/main_page.dart';
-import 'package:schoolapp/pages/screenbar.dart';
+import 'package:schoolapp/pages/mainpages/community.dart';
 import 'package:schoolapp/providerclass/allprovider.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
-import 'package:schoolapp/services/auth_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +12,7 @@ Future<void> main() async {
     providers: [
       ChangeNotifierProvider(create: (_) => AuthService()),
       ChangeNotifierProvider(create: (_) => SchoolControllerProvider()),
-      ChangeNotifierProvider(create: (_) => NextButtonProvider())
+      ChangeNotifierProvider(create: (_) => NextButtonProvider()),
     ],
     child: const MyApp(),
   ));
