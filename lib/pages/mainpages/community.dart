@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:schoolapp/pages/create_post/create_post.dart';
+import 'package:schoolapp/pages/mainpages/two%20section(community)/myschoolpage.dart';
+import 'package:schoolapp/pages/mainpages/two%20section(community)/nationalstudentpage.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
 import 'package:schoolapp/utility/utils.dart';
 
@@ -25,6 +27,15 @@ class _MainPageState extends State<MainPage> {
   onCraetePost() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => CreatePost()));
+  }
+
+  Widget _buildPage() {
+    // Depending on the 'leftclick' state, return the appropriate page
+    if (leftclick) {
+      return NationalStudentPage();
+    } else {
+      return MySchoolPage();
+    }
   }
 
   @override
@@ -131,9 +142,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        body: IndexedStack(
-          children: [],
-        ),
+        body: _buildPage(),
         floatingActionButton: FloatingActionButton(
           onPressed: onCraetePost,
           child: const Icon(

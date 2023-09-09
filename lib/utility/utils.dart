@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
@@ -79,4 +81,26 @@ TextStyle SafeGoogleFont(
       decorationThickness: decorationThickness,
     );
   }
+}
+
+void showSnackBar(BuildContext context, String content) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(content),
+    ),
+  );
+}
+
+//image picker
+
+Future<List<File>> pickImages() async {
+  List<File> images = [];
+  final ImagePicker picker = ImagePicker();
+  final imageFiles = await picker.pickMultiImage();
+  if (imageFiles.isNotEmpty) {
+    for (final image in imageFiles) {
+      images.add(File(image.path));
+    }
+  }
+  return images;
 }

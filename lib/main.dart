@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:schoolapp/pages/mainpages/bottomnav.dart';
 import 'package:schoolapp/pages/mainpages/community.dart';
 import 'package:schoolapp/providerclass/allprovider.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainPage(),
+      home: BottomNav(),
     );
   }
 }
