@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:schoolapp/components/my_button.dart';
 import 'package:schoolapp/utility/utils.dart';
 
@@ -20,14 +22,24 @@ class _CreatePostState extends State<CreatePost> {
 
   @override
 
-  void postMessage() {
+  void postMessage() async {
     if (postTextController.text.isNotEmpty && titleTextController.text.isNotEmpty) {
+      List<String> imageUrls = []; // 이미지의 다운로드 URL을 저장할 리스트
+
+      // 이미지를 Firebase Storage에 업로드하고 다운로드 URL 받기
+      for (final imageFile in images) {
+        final imageUrl = await uploadImageToFirebaseStorage(imageFile);
+        if (imageUrl.isNotEmpty) {
+          imageUrls.add(imageUrl);
+        }
+      }
       FirebaseFirestore.instance.collection("User Posts").add({
         'UserEmail' : currentUser.email,
         'TitleMessage' : titleTextController.text,
         'Message' : postTextController.text,
         'TimeStamp' : Timestamp.now(),
         'Likes' : [],
+        'ImageUrls' : imageUrls,
       });
 
       Navigator.pop(context);

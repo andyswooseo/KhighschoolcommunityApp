@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
@@ -103,4 +104,21 @@ Future<List<File>> pickImages() async {
     }
   }
   return images;
+}
+
+Future<String> uploadImageToFirebaseStorage(File imageFile) async {
+  try {
+    final Reference storageReference =
+    FirebaseStorage.instance.ref().child('images/${DateTime.now()}.jpg');
+
+    final UploadTask uploadTask = storageReference.putFile(imageFile);
+
+    final TaskSnapshot storageTaskSnapshot = await uploadTask;
+    final String downloadURL = await storageTaskSnapshot.ref.getDownloadURL();
+
+    return downloadURL ?? ''; // Return an empty string if downloadURL is null
+  } catch (e) {
+    print('이미지 업로드 중 오류 발생: $e');
+    return ''; // Return an empty string in case of an error
+  }
 }

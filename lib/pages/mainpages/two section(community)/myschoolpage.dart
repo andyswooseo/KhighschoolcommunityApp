@@ -15,7 +15,6 @@ class _MySchoolPageState extends State<MySchoolPage> {
       body: Center(
         child: Column(
           children: [
-            Text('hello world')
           ],
         ),
       ),
