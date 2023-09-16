@@ -12,7 +12,35 @@ class SchoolPage extends StatefulWidget {
 }
 
 class _SchoolPageState extends State<SchoolPage> {
+  String? mySchool;
+
+  Future _getSchoolName() async {
+    String currentUserEmail =
+    FirebaseAuth.instance.currentUser!.email.toString();
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currentUserEmail)
+        .get()
+        .then((snapshot) async {
+      if (snapshot.exists) {
+        setState(() {
+          mySchool = snapshot.data()!["schoolvalue"].toString();
+          print(mySchool);
+        });
+      }
+    });
+  }
+
   @override
+  void initState() {
+    super.initState();
+    _getSchoolName().then((schoolName) {
+      setState(() {
+        mySchool = schoolName;
+      });
+    });
+  }
+
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -22,7 +50,6 @@ class _SchoolPageState extends State<SchoolPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text()
               ],
             ),
           ),
