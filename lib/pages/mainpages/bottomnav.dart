@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:schoolapp/pages/mainpages/account.dart';
 import 'package:schoolapp/pages/mainpages/community.dart';
-import 'package:schoolapp/pages/mainpages/notification.dart';
+import 'package:schoolapp/pages/mainpages/calendar.dart';
 import 'package:schoolapp/pages/mainpages/school_page.dart';
+import 'package:schoolapp/pages/mainpages/studytimer.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -18,8 +19,9 @@ class _BottomNavState extends State<BottomNav> {
 
   final screens = [
     MainPage(),
+    StudyTimer(),
     SchoolPage(),
-    NotificationPage(),
+    Calendar(),
     Account()
   ];
 
@@ -40,12 +42,16 @@ class _BottomNavState extends State<BottomNav> {
               text: '커뮤니티',
             ),
             GButton(
+              icon: Icons.timer_outlined,
+              text: '순공시간',
+            ),
+            GButton(
               icon: Icons.school_outlined,
               text: '내 학교',
             ),
             GButton(
-              icon: Icons.notifications_outlined,
-              text: '알림',
+              icon: Icons.calendar_month_outlined,
+              text: '스케줄',
             ),
             GButton(
               icon: Icons.account_box_outlined,

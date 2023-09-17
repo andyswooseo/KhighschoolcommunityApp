@@ -41,7 +41,7 @@ class _SchoolPageState extends State<SchoolPage> {
                             style: SafeGoogleFont(
                               'Noto Sans KR',
                               fontSize: 30,
-                              fontWeight: FontWeight.w100,
+                              fontWeight: FontWeight.w900,
                             ),
                           );
                         } else if (snapshot.connectionState ==
