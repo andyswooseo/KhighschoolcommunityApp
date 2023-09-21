@@ -43,7 +43,7 @@ dependencies:
   web_socket_channel: ^2.4.0
   dropdown_button2: ^2.3.8
   firebase_auth: ^4.8.0
-  provider:
+  provider: ^6.0.5
   google_nav_bar: ^5.0.6
   curved_navigation_bar: ^1.0.3
   riverpod: ^2.3.10
@@ -55,7 +55,6 @@ dependencies:
   path_provider: ^2.1.1
   flutter_image_compress: ^2.0.4
   firebase_storage: ^11.2.6
-  flutter_neumorphic: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +98,10 @@ flutter:
     - family: NanumSquareNeoVariable
       fonts:
         - asset: android/assets/fonts/NanumSquareNeo-eHv.ttf
+
+    - family: BMHANNA
+      fonts:
+        - asset: android/assets/fonts/BMHANNA_11yrs_ttf.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
