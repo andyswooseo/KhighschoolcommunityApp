@@ -30,7 +30,8 @@ class _AuthGateState extends State<AuthGate> {
           if (snapshot.hasData) {
             if (schoolControllerProvider.schoolValue != null && isButtonClicked) {
               return BottomNav();
-            } else {
+            }
+            else {
               return SchoolSelection();
             }
           }

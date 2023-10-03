@@ -12,9 +12,9 @@ Future<void> main() async {
   await Firebase.initializeApp();
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => AuthService()),
-      ChangeNotifierProvider(create: (_) => SchoolControllerProvider()),
-      ChangeNotifierProvider(create: (_) => NextButtonProvider()),
+      ChangeNotifierProvider<AuthService>(create: (_) => AuthService()),
+      ChangeNotifierProvider<SchoolControllerProvider>(create: (_) => SchoolControllerProvider()),
+      ChangeNotifierProvider<NextButtonProvider>(create: (_) => NextButtonProvider()),
     ],
     child: const MyApp(),
   ));

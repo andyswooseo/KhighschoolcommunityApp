@@ -48,6 +48,7 @@ class AuthService extends ChangeNotifier {
         'uid' : userCredential.user!.uid,
         'email' : email,
         'nickname' : nickname,
+        'schoolvalue' : null,
       }, SetOptions(merge: true));
 
       return userCredential;
