@@ -6,6 +6,8 @@ import 'package:schoolapp/components/scrollablecolumn.dart';
 import 'package:schoolapp/providerclass/allprovider.dart';
 import 'package:schoolapp/utility/utils.dart';
 
+import '../services/auth/uservalueprovider.dart';
+
 class SchoolSelection extends StatefulWidget {
 
   const SchoolSelection({super.key});
@@ -187,6 +189,12 @@ class _SchoolSelectionState extends State<SchoolSelection> {
               FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.email.toString()).update({
                 'schoolvalue' : schoolcontroller.text
               });
+
+              final user = FirebaseAuth.instance.currentUser;
+
+              // Set user data in UserValueProvider
+              Provider.of<UserValueProvider>(context, listen: false).setSchoolValue(schoolcontroller.text);
+              Provider.of<UserValueProvider>(context, listen: false).setUid(user?.uid ?? '');
             },
             child: Container(
               width: mWidth,

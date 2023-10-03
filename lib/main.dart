@@ -5,6 +5,7 @@ import 'package:schoolapp/pages/mainpages/bottomnav.dart';
 import 'package:schoolapp/pages/mainpages/community.dart';
 import 'package:schoolapp/providerclass/allprovider.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
+import 'package:schoolapp/services/auth_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BottomNav(),
+      home: AuthGate(),
     );
   }
 }

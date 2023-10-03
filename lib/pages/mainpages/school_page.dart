@@ -13,7 +13,7 @@ class SchoolPage extends StatefulWidget {
 class _SchoolPageState extends State<SchoolPage> {
   Future<DocumentSnapshot> getDocument() async {
     var firebaseUser =
-        await FirebaseAuth.instance.currentUser!.email.toString();
+    await FirebaseAuth.instance.currentUser!.email.toString();
     return FirebaseFirestore.instance
         .collection("users")
         .doc(firebaseUser)
@@ -42,7 +42,7 @@ class _SchoolPageState extends State<SchoolPage> {
                 flex: 1,
                 child: Container(
                   child: Text(
-                    '학교 커뮤니티',
+                      '학교 커뮤니티',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontFamily: 'BMHANNA', fontSize: 30)
                   ),

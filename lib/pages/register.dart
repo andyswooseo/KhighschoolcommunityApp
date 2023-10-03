@@ -1,10 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:schoolapp/components/scrollablecolumn.dart';
 import 'package:schoolapp/components/text_field.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
-
-import '../providerclass/allprovider.dart';
+import '../services/auth/uservalueprovider.dart';
 import '../utility/utils.dart';
 
 class Register extends StatefulWidget {
@@ -43,6 +43,14 @@ class _RegisterState extends State<Register> {
           passwordController.text,
           nicknameController.text
           );
+
+      final user = FirebaseAuth.instance.currentUser;
+
+      // Set user data in UserValueProvider
+      Provider.of<UserValueProvider>(context, listen: false).setUserEmail(user?.email ?? '');
+      Provider.of<UserValueProvider>(context, listen: false).setNickname(nicknameController.text);
+      Provider.of<UserValueProvider>(context, listen: false).setUid(user?.uid ?? '');
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
