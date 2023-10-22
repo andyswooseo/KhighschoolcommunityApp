@@ -15,19 +15,3 @@ class SchoolControllerProvider with ChangeNotifier {
     notifyListeners();
   }
 }
-
-class NextButtonProvider with ChangeNotifier {
-  bool _isClicked = false;
-
-  bool get isClicked => _isClicked;
-
-  void setClicked(bool clicked) {
-    _isClicked = clicked;
-    notifyListeners();
-  }
-
-  void resetClicked() {
-    _isClicked = false;
-    notifyListeners();
-  }
-}

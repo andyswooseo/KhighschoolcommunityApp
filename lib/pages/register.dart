@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:schoolapp/components/scrollablecolumn.dart';
 import 'package:schoolapp/components/text_field.dart';
 import 'package:schoolapp/services/auth/auth_service.dart';
+import '../providerclass/allprovider.dart';
 import '../utility/utils.dart';
+import 'mainpages/bottomnav.dart';
 
 class Register extends StatefulWidget {
   final void Function()? onTap;
@@ -20,6 +24,7 @@ class _RegisterState extends State<Register> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final nicknameController = TextEditingController();
+  final schoolcontroller = TextEditingController();
 
   //sign up user
   void signUp(BuildContext context) async {
@@ -32,23 +37,81 @@ class _RegisterState extends State<Register> {
       return;
     }
 
-    //get auth service
+    if (emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty ||
+        nicknameController.text.isEmpty ||
+        schoolcontroller.text.isEmpty ||
+        selectedRegion == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('모든 필수 필드를 입력하세요.'),
+        ),
+      );
+      return;
+    }
+
     final authService = Provider.of<AuthService>(context, listen: false);
 
     try {
       await authService.signUpWithEmailPassword(
           emailController.text,
           passwordController.text,
-          nicknameController.text
-          );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
+          nicknameController.text,
+          schoolcontroller.text);
+
+      // 회원가입이 성공하면 BottomNav 화면으로 이동
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => BottomNav(),
         ),
       );
+    } catch (e) {
+      if (e is FirebaseAuthException) {
+        // Firebase에서 이미 있는 사용자일 경우의 처리
+        if (e.code == 'email-already-in-use') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('이미 존재하는 이메일 주소입니다. 다른 이메일을 시도하세요.'),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                e.toString(),
+              ),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('비밀번호를 다시 적거나 이메일을 검토해주세요.ㅇ'),
+          ),
+        );
+      }
+    }
+  }
+
+
+
+  //school selection
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String? selectedRegion;
+  List<String> allSchoolValue = [];
+
+  Future<void> fetchAllSchoolValue() async {
+    if (selectedRegion != null) {
+      final snapshot =
+          await _firestore.collection('schoolname').doc(selectedRegion).get();
+      if (snapshot.exists) {
+        setState(() {
+          allSchoolValue = (snapshot['allschool'] as List<dynamic>)
+              .map<String>((item) => item.toString())
+              .toList();
+        });
+      }
     }
   }
 
@@ -65,9 +128,9 @@ class _RegisterState extends State<Register> {
         body: ScrollableColumn(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: mHeight * 0.1),
+            SizedBox(height: mHeight * 0.05),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20),
+              padding: const EdgeInsets.only(bottom: 15),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Text(
@@ -189,8 +252,146 @@ class _RegisterState extends State<Register> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 5,
+            SizedBox(
+              height: 20 * fem,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                '학교 시도교육청 선택하기 *',
+                style: SafeGoogleFont(
+                  'Noto Sans KR',
+                  fontSize: 16 * ffem,
+                  fontWeight: FontWeight.w700,
+                  height: 1.3 * ffem / fem,
+                  color: const Color(0xff000000),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8.5 * fem,
+            ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color(0xffaeaeae),
+                  ),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 7),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _firestore.collection('schoolname').snapshots(),
+                  builder: (context, snapshot) {
+                    List<DropdownMenuItem> regionItems = [];
+                    if (!snapshot.hasData) {
+                      const CircularProgressIndicator();
+                    } else {
+                      final regions = snapshot.data?.docs.reversed.toList();
+                      for (var region in regions!) {
+                        regionItems.add(
+                          DropdownMenuItem(
+                            value: region.id,
+                            child: Text(region["region"]),
+                          ),
+                        );
+                      }
+                    }
+                    return DropdownButton(
+                      hint: const Text('  학교 시도교육청을 선택해주세요.'),
+                      dropdownColor: Colors.white,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      items: regionItems,
+                      value: selectedRegion,
+                      onChanged: (regionValue) {
+                        setState(() {
+                          selectedRegion = regionValue;
+                          fetchAllSchoolValue();
+                        });
+                      },
+                      isExpanded: true,
+                    );
+                  },
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20 * fem,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 30),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text(
+                      '재학 중인 고등학교 검색 *',
+                      style: SafeGoogleFont(
+                        'Noto Sans KR',
+                        fontSize: 16 * ffem,
+                        fontWeight: FontWeight.w700,
+                        height: 1.3 * ffem / fem,
+                        color: const Color(0xff000000),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.email.toString()).update({
+                        'highschool' : schoolcontroller.text
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Text('학교 확인'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 8.5 * fem,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color(0xffaeaeae),
+                  ),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return const Iterable<String>.empty();
+                  }
+                  return allSchoolValue.where((String item) {
+                    return item.contains(textEditingValue.text.toLowerCase());
+                  });
+                },
+                onSelected: (String selectedValue) {
+                  setState(() {
+                    schoolcontroller.text = selectedValue;
+                    Provider.of<SchoolControllerProvider>(context,
+                            listen: false)
+                        .schoolValue = selectedValue;
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              height: 3 * fem,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -225,7 +426,7 @@ class _RegisterState extends State<Register> {
             ),
             Spacer(),
             InkWell(
-              onTap: () async{
+              onTap: () async {
                 signUp(context);
               },
               child: Container(

@@ -35,7 +35,7 @@ class AuthService extends ChangeNotifier {
   }
 
   //create a new user
-  Future<UserCredential> signUpWithEmailPassword(email, password, nickname) async {
+  Future<UserCredential> signUpWithEmailPassword(email, password, nickname, highschool) async {
     try {
       UserCredential userCredential =
       await _firebaseAuth.createUserWithEmailAndPassword(
@@ -48,7 +48,7 @@ class AuthService extends ChangeNotifier {
         'uid' : userCredential.user!.uid,
         'email' : email,
         'nickname' : nickname,
-        'schoolvalue' : null,
+        'highschool' : highschool,
       }, SetOptions(merge: true));
 
       return userCredential;

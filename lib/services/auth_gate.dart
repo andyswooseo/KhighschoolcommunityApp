@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
 import 'package:schoolapp/pages/mainpages/bottomnav.dart';
-import 'package:schoolapp/pages/screenbar.dart';
-import '../providerclass/allprovider.dart';
 import 'auth/login_or_register.dart';
 
 class AuthGate extends StatefulWidget {
@@ -15,25 +12,36 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
+  bool isFieldExist = false;
+  final currentUser = FirebaseAuth.instance.currentUser?.email;
+  late Stream<DocumentSnapshot> schoolValueStream;
 
   @override
+  void initState() {
+    super.initState();
+    schoolValueStream = FirebaseFirestore.instance.collection('users').doc(currentUser.toString()).snapshots();
+    schoolValueStream.listen((DocumentSnapshot snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> dataMap = snapshot.data() as Map<String, dynamic>;
+        bool hasSchoolValue = dataMap.containsKey('highschool');
+        setState(() {
+          isFieldExist = hasSchoolValue;
+          print(isFieldExist);
+          print('hello');
+        });
+      }
+    });
+  }
+
+  @override
+
   Widget build(BuildContext context) {
-
-    final schoolControllerProvider = Provider.of<SchoolControllerProvider>(context);
-    final nextButtonProvider = Provider.of<NextButtonProvider>(context);
-    bool isButtonClicked = nextButtonProvider.isClicked;
-
     return Scaffold(
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            if (schoolControllerProvider.schoolValue != null && isButtonClicked) {
               return BottomNav();
-            }
-            else {
-              return SchoolSelection();
-            }
           }
           else {
             return const LoginOrRegister();
