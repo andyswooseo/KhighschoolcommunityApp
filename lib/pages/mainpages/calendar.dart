@@ -119,15 +119,19 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
 
-    List<List<String>> tableData = [
-      [monday1, tuesday1, wednesday1, thursday1, friday1],
-      [monday2, tuesday2, wednesday2, thursday2, friday2],
-      [monday3, tuesday3, wednesday3, thursday3, friday3],
-      [monday4, tuesday4, wednesday4, thursday4, friday4],
-      [monday5, tuesday5, wednesday5, thursday5, friday5],
-      [monday6, tuesday6, wednesday6, thursday6, friday6],
-      [monday7, tuesday7, wednesday7, thursday7, friday7],
-    ];
+    Future<List<List<String>>> fetchTableData() async {
+      // 여기에 데이터를 가져오는 비동기 작업을 수행합니다.
+      await Future.delayed(Duration(seconds: 2)); // 예시로 2초 대기
+      return [
+        ['monday1', 'tuesday1', 'wednesday1', 'thursday1', 'friday1'],
+        ['monday2', 'tuesday2', 'wednesday2', 'thursday2', 'friday2'],
+        ['monday3', 'tuesday3', 'wednesday3', 'thursday3', 'friday3'],
+        ['monday4', 'tuesday4', 'wednesday4', 'thursday4', 'friday4'],
+        ['monday5', 'tuesday5', 'wednesday5', 'thursday5', 'friday5'],
+        ['monday6', 'tuesday6', 'wednesday6', 'thursday6', 'friday6'],
+        ['monday7', 'tuesday7', 'wednesday7', 'thursday7', 'friday7'],
+      ];
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -144,22 +148,41 @@ class _CalendarState extends State<Calendar> {
               SizedBox(
                 height: 5,
               ),
-              Table(
-                border: TableBorder.all(color: Colors.black, width: 1.0),
-                children: List.generate(
-                  7,
-                  (rowIndex) => TableRow(
-                    children: List.generate(
-                      5,
-                      (colIndex) => Container(
-                        height: 50.0,
-                        width: 50.0,
-                        alignment: Alignment.center,
-                        child: Text(tableData[rowIndex][colIndex]), // 데이터를 추가
+              FutureBuilder<List<List<String>>>(
+                future: fetchTableData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // 데이터를 가져오는 중인 경우 로딩 스피너 또는 다른 로딩 UI를 표시할 수 있습니다.
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // 데이터 가져오기에 오류가 있는 경우 에러 메시지를 표시할 수 있습니다.
+                    return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData) {
+                    // 데이터가 없는 경우 아무것도 표시하지 않습니다.
+                    return Container();
+                  } else {
+                    // 데이터를 가져와서 테이블을 생성합니다.
+                    final tableData = snapshot.data;
+
+                    return Table(
+                      border: TableBorder.all(color: Colors.black, width: 1.0),
+                      children: List.generate(
+                        7,
+                            (rowIndex) => TableRow(
+                          children: List.generate(
+                            5,
+                                (colIndex) => Container(
+                              height: 50.0,
+                              width: 50.0,
+                              alignment: Alignment.center,
+                              child: Text(tableData![rowIndex][colIndex]),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                    );
+                  }
+                },
               ),
               Text(mondayFormatted.toString()),
               Text(fridayFormatted.toString()),

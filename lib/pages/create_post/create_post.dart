@@ -2,9 +2,7 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:schoolapp/components/my_button.dart';
 import 'package:schoolapp/utility/utils.dart';
 
@@ -21,7 +19,6 @@ class _CreatePostState extends State<CreatePost> {
   List<File> images = [];
 
   @override
-
   void postMessage() async {
     if (postTextController.text.isNotEmpty && titleTextController.text.isNotEmpty) {
       List<String> imageUrls = []; // 이미지의 다운로드 URL을 저장할 리스트
@@ -158,8 +155,6 @@ class _CreatePostState extends State<CreatePost> {
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(bottom: 10),
-        decoration: const BoxDecoration(
-            border: Border(top: BorderSide(color: Colors.black, width: 0.3))),
         child: Row(
           children: [
             Padding(
