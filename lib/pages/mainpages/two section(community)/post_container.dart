@@ -11,17 +11,16 @@ class WallPost extends StatefulWidget {
   final String title;
   final List<String> likes;
   final String postId;
-  final String? imageUrls;
+  final List<String> imageUrls;
 
-  const WallPost({
-    super.key,
-    required this.message,
-    required this.user,
-    required this.title,
-    required this.likes,
-    required this.postId,
-    this.imageUrls
-  });
+  const WallPost(
+      {super.key,
+      required this.message,
+      required this.user,
+      required this.title,
+      required this.likes,
+      required this.postId,
+      required this.imageUrls});
 
   @override
   State<WallPost> createState() => _WallPostState();
@@ -105,7 +104,7 @@ class _WallPostState extends State<WallPost> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: maxWidth - 50,
+                              width: maxWidth - 100,
                               child: Row(
                                 children: [
                                   Expanded(
@@ -128,7 +127,7 @@ class _WallPostState extends State<WallPost> {
                               height: 10,
                             ),
                             SizedBox(
-                              width: maxWidth - 50,
+                              width: maxWidth - 100,
                               child: Row(
                                 children: [
                                   Expanded(
@@ -149,12 +148,15 @@ class _WallPostState extends State<WallPost> {
                             ),
                           ],
                         ),
-                        if (widget.imageUrls != null) // imageUrls가 null이 아닌 경우에만 출력
-                          Image.network(
-                            widget.imageUrls!,
-                            width: maxWidth, // 이미지 너비 설정
-                            fit: BoxFit.cover, // 이미지를 화면에 맞게 조절
-                          ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          height: 60,
+                          child: widget.imageUrls.isNotEmpty
+                              ? Image.network(widget.imageUrls[0])
+                              : const SizedBox(), // or a placeholder widget
+                        )
                         // here
                       ],
                     ),

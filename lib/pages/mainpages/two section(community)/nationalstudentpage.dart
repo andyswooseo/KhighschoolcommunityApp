@@ -38,6 +38,7 @@ class _NationalStudentPageState extends State<NationalStudentPage> {
                           title: post['TitleMessage'],
                           likes: List<String>.from(post['Likes'] ?? []),
                           postId: post.id,
+                          imageUrls: List<String>.from(post['ImageUrls'] ?? []),
                         );
                       },
                     );
